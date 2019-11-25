@@ -7,16 +7,14 @@ export default class BottomSection extends Component {
 
         return (
             <div>
-                <section className="pre-footer-section">
+                <div className="get-started-block">
+                    <button className="move-to-top" onClick={()=>window.scrollTo(0, 0)}>{languageManager.last_btn}</button>
+                </div>
+                <footer className="footer-block">
                     <div className="container">
-                        <button className="pre-footer-btn scroll-top-btn" onClick={()=>{window.location.href='#'}}>
-                            <span>{languageManager.last_btn}</span>
-                        </button>
-                    </div>
-                </section>
-                <footer className="footer text-center">
-                    <div className="container">
-                        <img src={logo} className="footer-logo" alt="logo"/>
+                        <div className="footer-logo">
+                            <img src={logo} className="footer-logo" alt="logo" style={{width: 235+'px'}}/>
+                        </div>
                     </div>
                 </footer>
             </div>

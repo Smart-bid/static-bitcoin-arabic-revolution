@@ -16,20 +16,8 @@ export default class App extends ReactQueryParams {
             step: 1,
             page: 'main',
         };
-
-        this.handleStep = this.handleStep.bind(this);
         this.pageHandler = this.pageHandler.bind(this);
     }
-
-
-    handleStep = (step) => {
-        this.setState({step})
-    };
-
-    handleSubmit = () => {
-        this.props.handleSubmit()
-            .then(() => this.setState({ step: 1 }))
-    };
 
     pageHandler(page) {
         window.scrollTo(0, 0);
@@ -62,14 +50,13 @@ export default class App extends ReactQueryParams {
         if (this.state.page === 'main') {
             return (
                 <div className='App'>
-                    <TopSection {...this.props} handleStep={this.handleStep} handleSubmit={this.handleSubmit} step={this.state.step}/>
+                    <TopSection {...this.props} />
 
                     <MidSection languageManager={this.props.languageManager}/>
 
                     <BottomSection
                         languageManager={this.props.languageManager}
-                        pageHandler={this.pageHandler}
-                        handleForward={this.handleForward}/>
+                        pageHandler={this.pageHandler}/>
 
                 </div>
             )

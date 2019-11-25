@@ -1,19 +1,31 @@
 import React, {Component} from 'react'
 
-import yellowTick from './tick.png'
+import ok from './ok.png'
 
 export default class Table extends Component {
     constructor(props) {
         super(props);
-        var random = this.rand();
+        var random = this.rand(),
+            date = this.currentDate();
         this.state = {
             random: random,
-            tableArr: []
+            tableArr: [],
+            date: date
         }
     }
 
+    currentDate() {
+        let stamp = new Date().getTime(),
+            date = `\/Date(${stamp})\/`,
+            nowDate = new Date(parseInt(date.substr(6))),
+            result = "";
+        result += nowDate.format("mmmm d, yyyy");
+        return result;
+    }
+
     rand() {
-        const random = Math.floor(Math.random() * 26);
+        let languageManager = this.props.languageManager();
+        const random = Math.floor(Math.random() * languageManager.tableList.length);
         return random;
     }
     componentDidMount() {
@@ -26,15 +38,13 @@ export default class Table extends Component {
 
         const _this = this;
         this.timer = setInterval(() => {
-            var random = _this.rand();
+            var random = this.state.random;
             testArr[0].unshift(testArr[0][random]);
-            testArr[0].length = languageManager.tableList.length;
             testArr.push(languageManager.tableList);
             _this.setState({
                 tableArr: testArr[0],
-                random: random
             })
-        },4500)
+        },3000)
     }
     componentWillUnmount() {
         clearInterval(this.timer);
@@ -43,49 +53,56 @@ export default class Table extends Component {
     render() {
         let languageManager = this.props.languageManager();
         return(
-            <section className="live-results-section text-center" id="table">
-                <div className="container relative">
-                    <div className="live-results-table-wrapper">
-                        <button className="yellow-btn join-now-btn scroll-top-btn" onClick={()=>window.location.href='#'}>
+            <section className="live-profit-results-block" id="table">
+                <div className="left-side-coin"></div>
+                <div className="right-side-coin"></div>
+
+                <div className="results-table container">
+                    <div>
+                        <button className="yellow-btn join-now-btn scroll-top-btn" onClick={()=>window.scrollTo(0, 0)}>
                             <span>{languageManager.tableBtn}</span>
                         </button>
-                        <h3 className="dark-purple bold live-results-header" id="live_results">{languageManager.tableName}</h3>
-                        <div className="table-responsive">
-                            <table className="live-results-table">
-                                <thead className="thead">
-                                    <tr>
-                                    {
-                                        languageManager.tableMenuItems.map((item, index) => {
-                                            return(
-                                                <th className="dark-purple padding-left-td" key={index}>{item.name}</th>
-                                            )
-                                        })
-                                    }
-                                    </tr>
-                                </thead>
-                                <tbody className="tbody">
+                        <h4>
+                            {languageManager.tableName}
+                        </h4>
+                    </div>
+                    <div className="container" style={{height: 590+ 'px',overflow: 'hidden'}}>
+                        <table className="table">
+                            <thead className="thead-light">
+                            <tr>
                                 {
-                                    this.state.tableArr.map((item, index) => {
+                                    languageManager.tableMenuItems.map((item, index) => {
                                         return(
-                                            <tr key={index}>
-                                                <td className="bold">
-                                                    {item.name}
-                                                    {/*{item.descr}*/}
-                                                </td>
-                                                <td className="bold">{item.price}</td>
-                                                <td>{item.date}</td>
-                                                <td>{item.currency}</td>
-                                                <td>
-                                                    <img src={yellowTick} width="20"/>
-                                                </td>
-                                            </tr>
+                                            <th key={index}>{item.name}</th>
                                         )
                                     })
                                 }
-                                </tbody>
-                            </table>
-                        </div>
+                            </tr>
+                            </thead>
+                            <tbody className="tbody">
+                            {
+                                this.state.tableArr.map((item, index) => {
+                                    return(
+                                        <tr key={index}>
+                                            <td className="bold">
+                                                {item.name}
+                                            </td>
+                                            <td className="bold">
+                                                <b>{item.price}</b>
+                                            </td>
+                                            <td>{this.state.date}</td>
+                                            <td>{item.currency}</td>
+                                            <td>
+                                                <img src={ok} width="25"/>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            </tbody>
+                        </table>
                     </div>
+
                 </div>
             </section>
         )

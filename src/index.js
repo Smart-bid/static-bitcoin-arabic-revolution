@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { LpFramework, LpFrameworkWrapper } from 'sb-lp-framework';
 import './index.scss';
-import './main.css';
+import './style.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

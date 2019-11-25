@@ -12,6 +12,24 @@ export default class TopSection extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            inputs: [
+                {
+                    type: "text",
+                    name: "first_name",
+                },
+                {
+                    type: "text",
+                    name: "last_name",
+                },
+                {
+                    type: "email",
+                    name: "email",
+                },
+                {
+                    type: "password",
+                    name: "password",
+                },
+            ],
             videos: {
                 en_1,
                 fr_video
@@ -36,31 +54,30 @@ export default class TopSection extends Component {
         return (
             <div className='TopSection'>
                 <Header languageManager={this.props.languageManager} handleScroll={this.handleScroll.bind(this)}/>
-                <div className="headline">
-                    <div className="title">
-                        <h1>{languageManager.title}</h1>
-                    </div>
-                    <div className="subtitle">
-                        {/*<h2>{languageManager.subtitle}</h2>*/}
-                        <h4>
-                            <span className="white">{languageManager.subtitle2[0]} </span>
-                            <span className="yellow"> {languageManager.subtitle2[1]}</span>
-                        </h4>
-                    </div>
+
+                <div className="title-block">
+                    <h1>{languageManager.title}</h1>
+                    <label>
+                        <span>{languageManager.subtitle}</span>
+                    </label>
                 </div>
-                <div className="top-reg" id="top">
-                    <div className="container">
-                        <div className="row">
-                            <div className="video embed-responsive col-lg-8 col-md-7 col-sm-12">
+                <div className="player-form-logos-block">
+                    <div className="container player-form-block" id="bitcoin-video-container">
+
+                        <div className="player-holder col-md-8 col-sm-7" id="bitcoin-video">
+                            <div className="videoWrapper">
                                 <VideoPlayer link={this.state.videos[languageManager.video]} />
                             </div>
-                            <div className="col-lg-4 col-md-5 col-sm-12">
-                                <div className="form-container" ref={this.regPanel}>
-                                    <div className="formHeader"><h1>{languageManager.topreg1}</h1></div>
-                                    <Regform {...this.props} />
+                        </div>
+                        <div className="form-holder col-md-4 col-sm-5">
+                            <h2 className="form_title">{languageManager.topreg1}</h2>
+                            <div className="form_wrapper whiteLabel_form">
+                                <div className="gtd-common-form mainForm">
+                                    <Regform {...this.props} allInputs={this.state.inputs} />
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import qImage from './q.png'
 
 export default class Faq extends Component {
 
@@ -7,48 +6,50 @@ export default class Faq extends Component {
         let languageManager = this.props.languageManager();
 
         return (
-            <div className="faq-section">
-                    <div className="container">
-                        <h2 className="faq-section-header text-center dark-purple bold">{languageManager.qna_title}</h2>
-                        <div className="row">
-                            <div className="col-md-6">
+            <div className="frequently-asked-questions-block">
+                <div className="container">
+                    <div className="frequently-head">
+                        <button className="move-to-top">{languageManager.faqs_button}</button>
+                        <h4>{languageManager.faqs_title}</h4>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="question-card-holder">
                                 {
-                                    languageManager.qna_question.slice(0,3).map((item, index) => {
-                                        return (
-                                            <div className="row" key={index}>
-                                                <div className="col-md-11">
-                                                    <div className={`faq-wrapper faq-wrapper-${index+1}`}>
-                                                        {/*<img src={qImage} alt="question"/>*/}
-                                                        <h4 className="faq-question light-purple bold">{item.q}</h4>
-                                                        <p className="faq-answer">{item.a}</p>
-                                                    </div>
+                                    languageManager.faqs_list.slice(0,3).map((item,index) => {
+                                        return(
+                                            <div className="question-card" key={index}>
+                                                <span className="question-number">0{index+1}</span>
+                                                <div className="question-answer">
+                                                    <h4>{item.title}</h4>
+                                                    {item.descr}
                                                 </div>
                                             </div>
-
                                         )
                                     })
                                 }
                             </div>
-                            <div className="col-md-6">
+                        </div>
+                        <div className="col-md-6">
+                            <div className="question-card-holder">
                                 {
-                                    languageManager.qna_question.slice(3,6).map((item, index) => {
-                                        return (
-                                            <div className="row" key={index}>
-                                                <div className="col-md-11">
-                                                    <div className={`faq-wrapper faq-wrapper-${index+4}`}>
-                                                        {/*<img src={qImage} alt="question"/>*/}
-                                                        <h4 className="faq-question light-purple bold">{item.q}</h4>
-                                                        <p className="faq-answer">{item.a}</p>
-                                                    </div>
+                                    languageManager.faqs_list.slice(3,5).map((item, index) => {
+                                        let indexArr = [4,5];
+                                        return(
+                                            <div className="question-card" key={index}>
+                                                <span className="question-number">0{indexArr[index]}</span>
+                                                <div className="question-answer">
+                                                    <h4>{item.title}</h4>
+                                                    {item.descr}
                                                 </div>
                                             </div>
-
                                         )
                                     })
                                 }
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
         )
     }

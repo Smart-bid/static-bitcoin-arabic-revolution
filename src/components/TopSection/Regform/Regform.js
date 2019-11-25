@@ -2,234 +2,101 @@ import React, { Component } from 'react'
 import IntlTelInput from 'react-intl-tel-input'
 import 'react-intl-tel-input/dist/main.css'
 
-import { ReactComponent as Mark } from './excl.svg'
 import logo from '../../BottomSection/logo.png'
+import formCheck from './18.png'
 
 export default class Regform extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            first_name: "",
-            last_name: "",
-            email: "",
-            check: false,
-            phone_country_prefix: "",
-            country_name: "",
-            tel: "",
-            agree_1: true,
-            agree_2: true,
-            errors: '',
+            loading: false,
+            check: true,
+            form: {
+                first_name: "",
+                last_name: "",
+                email: "",
+                password: "",
+                phone_number: ""
+            }
         };
-        // this.handleBackwards = this.handleBackwards.bind(this);
-        // this.handleSync = this.handleSync.bind(this);
+        this.sendData = this.sendData.bind(this)
     }
 
-    componentDidUpdate() {
-        let forms = [...document.querySelectorAll('.Regform')];
-
-        forms.map(form => {
-            let steps = [...form.querySelectorAll('.form-wrapper')];
-            steps.map((step, index) => {
-                if (index+1 === this.props.step - 1) {
-                    step.classList.add('step');
-                }
-            })
-        })
-    }
-
-    handleSelectFlag = (num, country) => {
+    updateValue(name, value) {
         this.setState({
-            phone_country_prefix: '+' + `${country.dialCode}`,
-            country_name: country.iso2
-        })
-    };
-
-    phoneNumberBlur = (status, value, countryData) => {
-        this.setState({
-            phone_country_prefix: '+' + `${countryData.dialCode}`,
-            country_name: countryData.iso2
-        })
+            form: {
+                ...this.state.form,
+                [name]: value}
+            }
+        );
     }
 
-    phoneValidate = (value) => {
-        return !/[^0-9\-\/]/.test(value);
+    sendData() {
+        let form = this.state.form,
+            checkParams = this.props.validateParams(form)
+
+        if (checkParams.success && this.state.check) this.setState({errors: {},loading: true}, () => {
+            this.props.setLeadData(form)
+                .then(this.props.handleSubmit)
+                .then(res => (res.redirectUrl) ? window.location = res.redirectUrl : this.setState({loading: false}))
+
+        })
+        else this.setState({errors: checkParams.errors, loading: false})
     }
-
-    handleForward = (e) => {
-        let form = e.target.parentElement;
-        let paramsToValidate = {};
-
-        // Step 1
-        if(this.props.step === 1){
-            paramsToValidate = {
-                email: this.state.email,
-                first_name: this.state.first_name,
-                last_name: this.state.last_name,
-                agree_2: this.state.agree_2,
-                funnel_name: window.location.origin,
-            };
-            let checkParams = this.props.validateParams(paramsToValidate);
-
-            if (checkParams.success) {
-                this.props.setLeadData(paramsToValidate).then(this.props.handleLeadStep(), this.props.handleStep(this.props.step + 1));
-            } else {
-                const fieldWithMessages = Object.keys(checkParams.errors).find(field => checkParams.errors[field].hasOwnProperty('messages'));
-                const firstError = checkParams.errors[fieldWithMessages].messages[0];
-                this.setState({
-                    errors: firstError
-                })
-            }
-        }
-        // Step 2
-        else if (this.props.step === 2){
-            let tel = form.querySelector('.tel');
-            let phone_number = tel.value.replace(/^\s+|\s/g, '');
-
-            if (!this.phoneValidate(phone_number)) {
-                this.setState({
-                    errors: ['Enter only number']
-                });
-                return this.state.errors
-            } else if (phone_number.length > 3) {
-                paramsToValidate = {
-                    phone_number: phone_number,
-                    phone_country_prefix: this.state.phone_country_prefix
-                };
-                let submitPhone = this.props.validateParams(paramsToValidate);
-                if (submitPhone.success) {
-                    this.props.setLeadData(paramsToValidate).then(this.props.handleSubmit(), this.props.handleStep(this.props.step + 1));
-                    this.setState({
-                        errors: []
-                    });
-                }
-                else{
-                    this.setState({
-                        errors: submitPhone.errors
-                    })
-                }
-            } else {
-                this.setState({
-                    errors: ['Enter phone number']
-                });
-                return this.state.errors
-            }
-        }
-    };
-
-    handleStepChange = (name, value) => {
-        let errors = null;
-        this.setState({[name]: value.replace(/^\s+|\s/g, ''), errors});
-    };
 
     render() {
-        const {
-            first_name,
-            last_name,
-            email,
-            tel
-        } = this.state;
-        let languageManager = this.props.languageManager();
+        let languageManager = this.props.languageManager(),
+            errorMsgs = (this.state.errors) ? Object.keys(this.state.errors).map(key => { if (this.state.errors[key].messages) return this.state.errors[key].messages }).filter(value => value) : []
 
-        if (this.props.step <= 2) {
+        if (!this.state.loading) {
             return (
-                <div className={"Regform " + (this.props.class ? this.props.class : '')} ref={this.setTextInputRef}>
+                <div className="gtd-form-wrapper">
+                        <div className="errors" style={{color:'red'}}>
+                            {errorMsgs.map(arr => arr.map(error => <div key={error} className="errors">{error}</div>))}
+                        </div>
 
-                    <div className="steps form-header">
-                        <div className="progbar">
-                            <ul className="formUl">
-                                {[1,2,3].map(index => {
-                                    if(index <= this.props.step-1) {
-                                        return (
-                                            <li className="num active" key={index} index={index}>✓</li>
-                                        )
-                                    } else {
-                                        return (
-                                            <li className="num" key={index}></li>
-                                        )
-                                    }
-                                })}
-                            </ul>
-                        </div>
-                    </div>
+                        {this.props.allInputs.map((item, index)=>{
+                            return(
+                                <div className="form-group" key={index}>
+                                    <input type={item.type}
+                                           name={item.name}
+                                           placeholder={languageManager[item.name]}
+                                           className="form-control gtd-field-fname"
+                                           onChange={(e) => this.updateValue(e.target.name, e.target.value)}/>
+                                </div>
+                            )
+                        })}
 
-                    <div className='inner'>
-                        <div className='form-wrapper one'>
-                            {this.state.errors && <div className="errors">
-                                {this.state.errors}
-                            </div>}
-                            <div className="form-group">
-                                <input className="form-control fname" type="text" name="first_name" placeholder={languageManager.fname} value={first_name} onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control lname" type="text" name="last_name" placeholder={languageManager.lname} value={last_name} onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                            </div>
-                            <div className="form-group">
-                                <input className="form-control email" type="text" name="email" placeholder={languageManager.email} value={email} onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                            </div>
-                            <div className="form-group">
-                                <button onClick={this.handleForward} className='registerBtn'>{languageManager.button}</button>
-                            </div>
+                        <div className="row" style={{margin:0}}>
+                            <IntlTelInput
+                                fieldName="phone_number"
+                                preferredCountries={[this.props.countryCode]}
+                                defaultCountry={this.props.countryCode}
+                                containerClassName="intl-tel-input"
+                                inputClassName="inputfield tel small-input"
+                                autoPlaceholder={true}
+                                separateDialCode={true}
+                                format={true}
+                                onPhoneNumberChange={(e, value) => this.updateValue('phone_number', value.replace(/\D/g,''))}
+                            />
                         </div>
-                        <div className='form-wrapper two'>
-                            {this.state.errors && <div className="errors">
-                                {this.state.errors[0]}
-                            </div>}
-                            <div className="gtd-form-wrapper">
-                                <div className="row">
-                                    <div className="col-6">
-                                        <div className="form-group">
-                                            <input type="text" name="first_name" placeholder={languageManager.fname} value={first_name} className="form-control gtd-field-fname" onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="form-group">
-                                            <input type="text" name="last_name" placeholder={languageManager.lname} className="form-control gtd-field-lname" value={last_name} onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <input type="email" name="email" placeholder={languageManager.email} className="form-control gtd-field-email" value={email} onChange={(e) => this.handleStepChange(e.target.name, e.target.value)}/>
-                                </div>
-                                <div className="form-group">
-                                    <div className="row" style={{margin:0}}>
-                                        <IntlTelInput
-                                            preferredCountries={[this.props.countryCode]}
-                                            containerClassName="intl-tel-input"
-                                            inputClassName="inputfield form-control tel"
-                                            autoPlaceholder={true}
-                                            separateDialCode={true}
-                                            onSelectFlag={this.handleSelectFlag}
-                                            defaultCountry={this.state.country_name}
-                                            onPhoneNumberBlur={this.phoneNumberBlur}
-                                            onPhoneNumberChange={(status, value, countryData, number, id) => {
-                                                if (value.length < 15) {
-                                                    this.setState({
-                                                        phone_country_prefix: `+${countryData.dialCode}`,
-                                                        tel: value.replace(/[^0-9]/g, ''),
-                                                    })
-                                                }
-                                            }}
-                                            value={tel}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <button onClick={this.handleForward} className='registerBtn '>{languageManager.button}</button>
+
+                        <div className="agree_wrapper">
+                            <img src={formCheck} alt=""/>
+                            <input type="checkbox" name="iagree_input" className="iagree_input" id="iagree_input" checked={this.state.check} onChange={() => this.setState({check: !this.state.check})}/>
+                            <span className="iagree">
+                                <span className="popup_terms_link">{languageManager.agree}</span>
+                            </span>
                         </div>
-                        {/*<div className='form-wrapper three'>*/}
-                        {/*    /!*{this.state.errors && <div className="errors">*/}
-                        {/*        {this.state.errors[0]}*/}
-                        {/*    </div>}*!/                            */}
-                        {/*    <button onClick={this.handleForward} className='start' >{languageManager.button_last}</button>*/}
-                        {/*</div>*/}
-                    </div>
-                    <div className="error"><Mark className='excl'/><span></span></div>
+
+                    <button onClick={this.sendData} className='submit_btn gtd-form-submit '>{languageManager.button}</button>
                 </div>
             )
-        }else {
+        } else {
             return (
-                <div className={"Regform " + (this.props.class ? this.props.class : '')} ref={this.setTextInputRef}>
-                    <img src={logo} alt="lodaing" className="loading"/>
+                <div className={"Regform " + (this.props.class ? this.props.class : '')}>
+                    {/*<img src={logo} alt="lodaing" className="loading"/>*/}
+                    <h1 style={{color: '#fff'}}>Bitcoin Revolution</h1>
                 </div>
             )
 

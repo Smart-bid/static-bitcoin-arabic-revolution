@@ -4,7 +4,8 @@
 
 
 body {
-  font-family: 'Roboto', sans-serif;;
+  direction: rtl;
+  //font-family: 'Roboto', sans-serif;;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -21,6 +22,4 @@ p {
   margin: 0;
 }
 @import './components/TopSection/TopSection.scss';
-@import './components/MidSection/MidSection.scss';
-@import './components/BottomSection/BottomSection.scss';
 @import './pages/Page.scss';
