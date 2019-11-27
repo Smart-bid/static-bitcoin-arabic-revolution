@@ -38,7 +38,7 @@ export default class Regform extends Component {
         if (checkParams.success && this.state.check) this.setState({errors: {},loading: true}, () => {
             this.props.setLeadData(form)
                 .then(this.props.handleSubmit)
-                .then(res => (res.redirectUrl) ? window.location = res.redirectUrl : this.setState({loading: false}))
+                .then(res => (res.redirectUrl) ? window.location = res.redirectUrl : this.setState({responseError: res.error}))
 
         })
         else this.setState({errors: checkParams.errors, loading: false})
@@ -61,6 +61,7 @@ export default class Regform extends Component {
                                     <input type={item.type}
                                            name={item.name}
                                            placeholder={languageManager[item.name]}
+                                           defaultValue={this.state.form[item.name]}
                                            className="form-control gtd-field-fname"
                                            onChange={(e) => this.updateValue(e.target.name, e.target.value)}/>
                                 </div>
@@ -74,7 +75,7 @@ export default class Regform extends Component {
                                 defaultCountry={this.props.countryCode}
                                 containerClassName="intl-tel-input"
                                 inputClassName="inputfield tel small-input"
-                                autoPlaceholder={true}
+                                placeholder={languageManager.phone}
                                 separateDialCode={true}
                                 format={true}
                                 onPhoneNumberChange={(e, value) => this.updateValue('phone_number', value.replace(/\D/g,''))}
@@ -95,8 +96,14 @@ export default class Regform extends Component {
         } else {
             return (
                 <div className={"Regform " + (this.props.class ? this.props.class : '')}>
-                    {/*<img src={logo} alt="lodaing" className="loading"/>*/}
-                    <h1 style={{color: '#fff'}}>Bitcoin Revolution</h1>
+                    {
+                        (this.state.responseError) ?
+                            <div className="response-error">
+                                <p>{this.state.responseError}</p>
+                                <button className="submit_btn gtd-form-submit" onClick={()=>this.setState({loading:false})}>Ok</button>
+                            </div>
+                            : <h1 style={{color: '#fff'}}>Bitcoin Revolution</h1>
+                    }
                 </div>
             )
 
