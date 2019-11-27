@@ -9,6 +9,8 @@ jobs:
       - add_ssh_keys
       - run:
           command: echo '95.216.16.250 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBKe3sl5pc/ljvfemlG2A/HYAZEWXU/xTPHE2S6PFIhVIk29oVAtjbpZm/OWT0U68Nc7Kgb5tdZpPvpL8TvUTkIU=' >> ~/.ssh/known_hosts
+      - run:
+          command: cat ~/.ssh/known_hosts
       - restore_cache: # special step to restore the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
