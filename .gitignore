@@ -6,7 +6,6 @@ lp-framework/node_modules
 /lp-framework
 /_lp-framework
 /node_modules
-/config
 /.pnp
 .pnp.js
 .idea
