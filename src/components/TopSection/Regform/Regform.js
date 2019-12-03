@@ -72,12 +72,13 @@ export default class Regform extends Component {
                             <IntlTelInput
                                 fieldName="phone_number"
                                 preferredCountries={[this.props.countryCode]}
-                                defaultCountry={this.props.countryCode}
+                                defaultCountry={this.props.countryCode.toLowerCase()}
                                 containerClassName="intl-tel-input"
                                 inputClassName="inputfield tel small-input"
                                 placeholder={languageManager.phone}
                                 separateDialCode={true}
                                 format={true}
+                                value={this.state.form.phone_number}
                                 onPhoneNumberChange={(e, value) => this.updateValue('phone_number', value.replace(/\D/g,''))}
                             />
                         </div>
