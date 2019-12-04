@@ -38,7 +38,7 @@ export default class Regform extends Component {
         if (checkParams.success && this.state.check) this.setState({errors: {},loading: true}, () => {
             this.props.setLeadData(form)
                 .then(this.props.handleSubmit)
-                .then(res => (res.redirectUrl) ? window.location = res.redirectUrl : this.setState({responseError: res.error}))
+                .then(res => (res.redirectUrl && res.success) ? window.location = res.redirectUrl : this.setState({responseError: res.error}))
 
         })
         else this.setState({errors: checkParams.errors, loading: false})
