@@ -66,7 +66,7 @@ export default class TopSection extends Component {
 
                         <div className="player-holder col-md-8 col-sm-7" id="bitcoin-video">
                             <div className="videoWrapper">
-                                <VideoPlayer link={this.state.videos[languageManager.video]} />
+                                <VideoPlayer link={this.state.videos[languageManager.video]} {...this.props}/>
                             </div>
                         </div>
                         <div className="form-holder col-md-4 col-sm-5">

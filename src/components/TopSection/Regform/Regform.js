@@ -29,6 +29,7 @@ export default class Regform extends Component {
                 [name]: value}
             }
         );
+        this.props.trackStartEdit()
     }
 
     sendData() {
