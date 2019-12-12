@@ -11,6 +11,7 @@ export default class Regform extends Component {
         this.state = {
             loading: false,
             check: true,
+            errors: {},
             form: {
                 first_name: "",
                 last_name: "",
@@ -47,24 +48,24 @@ export default class Regform extends Component {
 
     render() {
         let languageManager = this.props.languageManager(),
+            errors = this.state.errors,
             errorMsgs = (this.state.errors) ? Object.keys(this.state.errors).map(key => { if (this.state.errors[key].messages) return this.state.errors[key].messages }).filter(value => value) : []
 
         if (!this.state.loading) {
             return (
                 <div className="gtd-form-wrapper">
-                        <div className="errors" style={{color:'red'}}>
-                            {errorMsgs.map(arr => arr.map(error => <div key={error} className="errors">{error}</div>))}
-                        </div>
 
                         {this.props.allInputs.map((item, index)=>{
                             return(
-                                <div className="form-group" key={index}>
+                                <div className="form-group" key={index}  style={{marginBottom: ((errors.hasOwnProperty(item.name) && errors[item.name].hasOwnProperty('messages'))  ? '0' : '1rem')}}>
                                     <input type={item.type}
                                            name={item.name}
+                                           autoComplete='off'
                                            placeholder={languageManager[item.name]}
                                            defaultValue={this.state.form[item.name]}
                                            className="form-control gtd-field-fname"
                                            onChange={(e) => this.updateValue(e.target.name, e.target.value)}/>
+                                    {(errors.hasOwnProperty(item.name)) ? (errors[item.name].hasOwnProperty('messages') && <div className='form-feedback'>{errors[item.name].messages[0]}</div>) : ''}
                                 </div>
                             )
                         })}
@@ -72,6 +73,7 @@ export default class Regform extends Component {
                         <div className="row" style={{margin:0}}>
                             <IntlTelInput
                                 fieldName="phone_number"
+                                autoComplete='off'
                                 preferredCountries={[this.props.countryCode]}
                                 defaultCountry={this.props.countryCode.toLowerCase()}
                                 containerClassName="intl-tel-input"
@@ -82,6 +84,7 @@ export default class Regform extends Component {
                                 value={this.state.form.phone_number}
                                 onPhoneNumberChange={(e, value) => this.updateValue('phone_number', value.replace(/\D/g,''))}
                             />
+                            {(errors.hasOwnProperty("phone_number")) ? (errors["phone_number"].hasOwnProperty('messages') && <div className='form-feedback'>{errors["phone_number"].messages[0]}</div>) : ''}
                         </div>
 
                         <div className="agree_wrapper">
