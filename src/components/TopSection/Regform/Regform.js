@@ -53,6 +53,7 @@ export default class Regform extends Component {
 
         if (!this.state.loading) {
             return (
+                
                 <div className="gtd-form-wrapper">
 
                         {this.props.allInputs.map((item, index)=>{
@@ -84,7 +85,7 @@ export default class Regform extends Component {
                                 value={this.state.form.phone_number}
                                 onPhoneNumberChange={(e, value) => this.updateValue('phone_number', value.replace(/\D/g,''))}
                             />
-                            {(errors.hasOwnProperty("phone_number")) ? (errors["phone_number"].hasOwnProperty('messages') && <div className='form-feedback'>{errors["phone_number"].messages[0]}</div>) : ''}
+                            {( errors.hasOwnProperty("phone_number") ) ? (errors["phone_number"].hasOwnProperty('messages') && <div className='form-feedback'>{errors["phone_number"].messages[0]}</div>) : ''}
                         </div>
 
                         <div className="agree_wrapper">
@@ -97,6 +98,7 @@ export default class Regform extends Component {
 
                     <button onClick={this.sendData} className='submit_btn gtd-form-submit '>{languageManager.button}</button>
                 </div>
+
             )
         } else {
             return (
