@@ -84,6 +84,7 @@ body {
 }
 .agree_wrapper {
     margin-top: 10px;
+    text-align: right;
 }
 
 .agree_wrapper * {
@@ -3684,4 +3685,5 @@ p {
     color: red;
     height: fit-content;
     direction: rtl;
+    text-align: right;
 }
